@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textViewvalorGas"
+        android:layout_width="128dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@+id/valorGas"
+        app:layout_constraintTop_toBottomOf="@+id/textViewidBotijao" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="clique"
+        android:text="@string/atualizar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/botijaoID"
+        android:layout_width="154dp"
+        android:layout_height="49dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/ID_Botijão"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <TextView
+        android:id="@+id/textViewidBotijao"
+        android:layout_width="128dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@+id/botijaoID"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <EditText
+        android:id="@+id/valorGas"
+        android:layout_width="154dp"
+        android:layout_height="44dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/valor_gas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/botijaoID" />
+
+    <EditText
+        android:id="@+id/editText4"
+        android:layout_width="154dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/dataMonitoramento"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/valorGas" />
+
+    <TextView
+        android:id="@+id/textViewDataMonitoramento"
+        android:layout_width="128dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@+id/editText4"
+        app:layout_constraintTop_toBottomOf="@+id/textViewvalorGas" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

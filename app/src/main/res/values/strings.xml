@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">appMonitoramento</string>
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="Login">Login</string>
+    <string name="atualizar">Atualizar</string>
+    <string name="ID_Botijão">ID_botijao</string>
+    <string name="valor_gas">valor_gas</string>
+    <string name="dataMonitoramento">dataMonitoramento</string>
+</resources>
