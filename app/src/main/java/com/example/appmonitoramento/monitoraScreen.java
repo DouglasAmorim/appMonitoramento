@@ -2,9 +2,12 @@ package com.example.appmonitoramento;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -42,7 +45,23 @@ public class monitoraScreen extends AppCompatActivity {
         // Pegar o valor atual do gás de cozinha
         //chama o retrofit para fazer a requisição no webservice
         retrofitConsultar(1);
+
+
+        Intent intent = new Intent(monitoraScreen.this,LocalNotify.class);
+        intent.putExtra("mensagem",resposta.getData());
+        int id = (int)(Math.random()*1000);
+        PendingIntent pi = PendingIntent.getActivity(getBaseContext(), id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification notification = new Notification.Builder (getBaseContext())
+                .setContentTitle("De: Douglas Amorim")
+                .setContentText(resposta.getData()).setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pi).build();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService( NOTIFICATION_SERVICE );
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(id,notification);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
