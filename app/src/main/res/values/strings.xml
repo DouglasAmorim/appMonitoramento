@@ -7,4 +7,6 @@
     <string name="ID_Botijão">ID_botijao</string>
     <string name="valor_gas">valor_gas</string>
     <string name="dataMonitoramento">dataMonitoramento</string>
+    <string name="channel_name">myChannel</string>
+    <string name="channel_description">MyDescription</string>
 </resources>
