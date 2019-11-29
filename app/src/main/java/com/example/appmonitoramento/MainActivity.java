@@ -1,5 +1,6 @@
 package com.example.appmonitoramento;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -14,6 +15,11 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -24,25 +30,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                System.out.println("asdasdasdas");
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(context);
-                boolean enviado = sharedPreferences.getBoolean("enviado", false);
-                if (enviado) {
-                    System.out.println("O token foi gerado e enviado ao servidor.");
-                } else {
-                    System.out.println("Um erro aconteceu ao gerar o token.");
-                }
-            }
-        };
+
+
 
         if(verificarPlayServices()) {
-            Intent intent = new Intent(this, RegistoService.class);
+            Intent intent = new Intent(this, MyFirebaseInstanceService.class);
             startService(intent);
         }
+
+
+/*
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (mUser == null) {
+            System.out.println("User is not authorized");
+        } else {
+            mUser.getIdToken(true)
+                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                            System.out.println("here");
+                            if (task.isSuccessful()) {
+                                String idToken = task.getResult().getToken();
+                                System.out.println("meu token é" + idToken);
+                            } else {
+                                System.out.println("SOMETHING IS WRONG");
+                                // Handle error -> task.getException();
+                            }
+                        }
+                    });
+        }
+*/
 
         /*
         Button btLogin = (Button) findViewById(R.id.btLogin);
