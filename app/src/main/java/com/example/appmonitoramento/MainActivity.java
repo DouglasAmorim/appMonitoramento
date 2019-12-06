@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -20,14 +20,22 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 //import com.google.firebase.auth.FirebaseAuth;
 //0import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import org.json.JSONException;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
     private BroadcastReceiver broadcastReceiver;
+    RespostaServidorLogin respostaLogin = new RespostaServidorLogin();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         }
 */
 
-        /*
+
         Button btLogin = (Button) findViewById(R.id.btLogin);
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,9 +101,16 @@ public class MainActivity extends AppCompatActivity {
                 String login = tLogin.getText().toString();
                 String senha = tSenha.getText().toString();
 
-                if(login.equals("amorimdos") && senha.equals("90909090")){
+                try {
+                    retrofitFazerLogin(login,senha);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(respostaLogin.getToken()!= null){
                     alert("Login Realizado com Sucesso");
+                    //alert(respostaLogin.getToken());
                     Intent monitoraScreen = new Intent(MainActivity.this, monitoraScreen.class);
+                    monitoraScreen.putExtra("token",respostaLogin.getToken());
                     startActivity(monitoraScreen);
                 }else {
                     alert("LOGIN OU SENHA INCORRETOS");
@@ -103,11 +118,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        */
+
     }
-   /* private void alert(String s){
+    private void alert(String s){
         Toast.makeText(this,s, Toast.LENGTH_LONG).show();
-    }*/
+    }
     private boolean verificarPlayServices() {
         int codigo = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (codigo != ConnectionResult.SUCCESS) {
@@ -134,5 +149,55 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         super.onPause();
+    }
+
+    public void retrofitFazerLogin(String usuario, String Senha) throws JSONException {
+
+        RetrofitService service = ServiceGenerator.createService(RetrofitService.class, usuario, Senha);
+
+        //final String json  =  "{\"idUsuario\": \"1\"}";
+
+        final String jsonUser  = "{\"user\": \""+usuario+"\"}";
+        final String jsonSenha  = "{\"senha\": \""+Senha+"\"}";
+        //RequestBody bodyUser = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), jsonUser);
+        //RequestBody bodySenha = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), jsonSenha);
+
+        //Call<User> userCall = apiInterface.getUser(paramObject.toString());
+
+        Call<RespostaServidorLogin> call = service.consultarLogin();
+
+        call.enqueue(new Callback<RespostaServidorLogin>() {
+            @Override
+            public void onResponse(Call<RespostaServidorLogin> call, Response<RespostaServidorLogin> response) {
+
+                if (response.isSuccessful()) {
+
+                    RespostaServidorLogin respostaServidorLogin = response.body();
+
+                    //verifica aqui se o corpo da resposta não é nulo
+                    if (respostaServidorLogin != null) {
+                        respostaLogin.setToken(respostaServidorLogin.getToken());
+
+
+                        //setaValores();
+                        //progress.dismiss();
+                    } else {
+                        Toast.makeText(getApplicationContext(),"Resposta nula do servidor", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),"Resposta não foi sucesso", Toast.LENGTH_SHORT).show();
+                    // segura os erros de requisição
+                    ResponseBody errorBody = response.errorBody();
+                }
+                //progress.dismiss();
+            }
+
+
+            @Override
+            public void onFailure(Call<RespostaServidorLogin> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"Erro na chamada ao servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

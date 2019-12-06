@@ -29,8 +29,10 @@ public class MyFirebaseInstanceService extends FirebaseMessagingService {
     }
 
     private void showNotification(Map<String, String> data) {
-        String title = data.get("title").toString();
-        String body = data.get("body").toString();
+        //String title = data.get("title").toString();
+        //String body = data.get("body").toString();
+        String title = data.get("title");
+        String body = data.get("body");
 
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "pji3";

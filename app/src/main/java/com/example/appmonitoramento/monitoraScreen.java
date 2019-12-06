@@ -24,6 +24,8 @@ public class monitoraScreen extends AppCompatActivity {
     RespostaServidor resposta = new RespostaServidor();
     ProgressDialog progress;
 
+    private static String token;
+
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -46,7 +48,8 @@ public class monitoraScreen extends AppCompatActivity {
         //chama o retrofit para fazer a requisição no webservice
         retrofitConsultar(1);
 
-
+//      Notificação Local
+        /*
         Intent intent = new Intent(monitoraScreen.this,LocalNotify.class);
         intent.putExtra("mensagem",resposta.getData());
         int id = (int)(Math.random()*1000);
@@ -60,6 +63,8 @@ public class monitoraScreen extends AppCompatActivity {
                 (NotificationManager) getSystemService( NOTIFICATION_SERVICE );
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(id,notification);
+        */
+
     }
 
 
@@ -67,6 +72,12 @@ public class monitoraScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Pega a intent de outra activity
+        Intent monitoraScreen = getIntent();
+
+        //Recuperei a string da outra activity
+        token = monitoraScreen.getStringExtra("token");
     }
 
     public void setaValores(){
@@ -83,7 +94,7 @@ public class monitoraScreen extends AppCompatActivity {
 
     public void retrofitConsultar(int idUsuario) throws JSONException {
 
-        RetrofitService service = ServiceGenerator.createService(RetrofitService.class);
+        RetrofitService service = ServiceGenerator.createService(RetrofitService.class,token);
 
         final String json  =  "{\"idUsuario\": \"1\"}";
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json);
