@@ -19,6 +19,13 @@ public interface RetrofitService {
     @POST("consultar")
     Call<RespostaServidor> consultarConsumo(@Body RequestBody idUsuario);
 
+    //@Headers("X-Mashape-Key: AuuyclCPjcmshv2iOPq190OpzLrMp1FJWwejsnJrdfwOUr4h44")
+    @Headers("Content-Type: application/json")
+    //@FormUrlEncoded
+    @POST("/api/users/token")
+    Call<RespostaServidorEnvioToken> enviarToken(@Body RequestBody token);
+
+
     @GET("/api/token")
     Call<RespostaServidorLogin> consultarLogin();
 

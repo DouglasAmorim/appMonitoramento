@@ -37,9 +37,16 @@ public class MyFirebaseInstanceService extends FirebaseMessagingService {
         String title = data.get("title");
         String body = data.get("body");
 
+        String peso = data.get("weight");
+        String tag = data.get("data");
+        System.out.println(peso);
+        System.out.println(tag);
         // TELA PARA QUAL A NOTIFICAÇÃO IRÁ REDIRECIONAR
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent .getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(this, confirmacaoTAG.class);
+        intent.putExtra("tag",tag);
+        intent.putExtra("peso",peso);
+        PendingIntent pendingIntent = PendingIntent .getActivity(this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "pji3";
@@ -59,9 +66,9 @@ public class MyFirebaseInstanceService extends FirebaseMessagingService {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(title)
+                .setContentTitle(tag)
                 .setContentIntent(pendingIntent)
-                .setContentText(body)
+                .setContentText(peso)
                 .setAutoCancel(true)
                 .setContentInfo("info");
         notificationManager.notify(new Random().nextInt(),notificationBuilder.build());

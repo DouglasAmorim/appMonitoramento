@@ -39,11 +39,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private BroadcastReceiver broadcastReceiver;
     RespostaServidorLogin respostaLogin = new RespostaServidorLogin();
+    RespostaServidorEnvioToken respostaEnvioToken = new RespostaServidorEnvioToken();
+    String tokenApp = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Ver no banco se o usuario já não está salvo
-        final dbGaspy mDbHelper = new dbGaspy(MainActivity.this);
+        /*final dbGaspy mDbHelper = new dbGaspy(MainActivity.this);
 
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             long itemId = c.getLong(c.getColumnIndexOrThrow(PostContract.PostEntry._ID));
         }catch (Exception e){
             System.out.println("ERRO NO BANCO= " + e);
-        }
+        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
@@ -94,12 +96,12 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        System.out.println(token);
+                        tokenApp = task.getResult().getToken();
+                        System.out.println(tokenApp);
                         // Log and toast
                         //String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, token);
-                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, tokenApp);
+                        Toast.makeText(MainActivity.this, tokenApp, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -122,12 +124,17 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(respostaLogin.getToken()!= null){
                     alert("Login Realizado com Sucesso");
-
-                    SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                    try {
+                        retrofitEnviarToken(tokenApp, login, senha);
+                        alert("TOKEN" + tokenApp);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    /*SQLiteDatabase db = mDbHelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
                     values.put(PostContract.PostEntry.COLUMN_NAME_USUARIO, login);
                     values.put(PostContract.PostEntry.COLUMN_NAME_TOKEN, respostaLogin.getToken());
-                    long newRowId = db.insert(PostContract.PostEntry.TABLE_NAME, null, values);
+                    long newRowId = db.insert(PostContract.PostEntry.TABLE_NAME, null, values);*/
 
                     //alert(respostaLogin.getToken());
                     Intent monitoraScreen = new Intent(MainActivity.this, monitoraScreen.class);
@@ -185,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
         }else {
             RetrofitService service = ServiceGenerator.createService(RetrofitService.class, usuario, Senha);
 
-
             Call<RespostaServidorLogin> call = service.consultarLogin();
 
             call.enqueue(new Callback<RespostaServidorLogin>() {
@@ -199,8 +205,6 @@ public class MainActivity extends AppCompatActivity {
                         //verifica aqui se o corpo da resposta não é nulo
                         if (respostaServidorLogin != null) {
                             respostaLogin.setToken(respostaServidorLogin.getToken());
-
-
                             //setaValores();
                             //progress.dismiss();
                         } else {
@@ -217,9 +221,53 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<RespostaServidorLogin> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "Erro na chamada ao servidor", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Erro na chamada ao servidor" + t, Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
+
+    public void retrofitEnviarToken(String token, String login, String senha) throws JSONException {
+        RetrofitService service = ServiceGenerator.createService(RetrofitService.class, login,senha);
+
+        final String json  =  "{\"app_token\": \"" + token+"\"}";
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json);
+
+        Call<RespostaServidorEnvioToken> call = service.enviarToken(body);
+
+
+        call.enqueue(new Callback<RespostaServidorEnvioToken>() {
+            @Override
+            public void onResponse(Call<RespostaServidorEnvioToken> call, Response<RespostaServidorEnvioToken> response) {
+
+                if (response.isSuccessful()) {
+
+                    RespostaServidorEnvioToken respostaServidorEnvioToken = response.body();
+
+                    //verifica aqui se o corpo da resposta não é nulo
+                    if (respostaServidorEnvioToken != null) {
+                        respostaServidorEnvioToken.setStatus(respostaServidorEnvioToken.getStatus());
+
+
+                        //setaValores();
+                        //progress.dismiss();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Resposta nula do servidor", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Resposta não foi sucesso", Toast.LENGTH_SHORT).show();
+                    // segura os erros de requisição
+                    ResponseBody errorBody = response.errorBody();
+                }
+                //progress.dismiss();
+            }
+
+
+            @Override
+            public void onFailure(Call<RespostaServidorEnvioToken> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Erro na chamada ao servidor" + t, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
