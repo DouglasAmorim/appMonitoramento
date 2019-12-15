@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             myEditor.putString("SENHA", senha_salvo);
             myEditor.putString("TOKEN", respostaLogin.getToken());
             Intent monitoraScreen = new Intent(MainActivity.this, monitoraScreen.class);
-            monitoraScreen.putExtra("token",respostaLogin.getToken());
             startActivity(monitoraScreen);
         }else {
             alert("LOGIN OU SENHA INCORRETOS");
@@ -144,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                     myEditor.commit();
 
                     Intent monitoraScreen = new Intent(MainActivity.this, monitoraScreen.class);
-                    monitoraScreen.putExtra("token",respostaLogin.getToken());
                     startActivity(monitoraScreen);
                 }else {
                     alert("LOGIN OU SENHA INCORRETOS");

@@ -2,21 +2,19 @@ package com.example.appmonitoramento;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.*;
 
@@ -46,7 +44,7 @@ public class monitoraScreen extends AppCompatActivity {
     public void clique(View view) throws JSONException {
         // Pegar o valor atual do gás de cozinha
         //chama o retrofit para fazer a requisição no webservice
-        retrofitConsultar(1);
+        //retrofitConsultar(1);
 
 //      Notificação Local
         /*
@@ -73,35 +71,40 @@ public class monitoraScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(monitoraScreen.this);
+
+        String user_salvo = myPreferences.getString("USUARIO", "unknown");
+        String senha_salvo = myPreferences.getString("SENHA", "unknown");
+        String token = myPreferences.getString("TOKEN", "unknown");
+
+        try {
+            retrofitConsultar(user_salvo,senha_salvo);
+            //alert("TOKEN" + tokenApp);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         //Pega a intent de outra activity
-        Intent monitoraScreen = getIntent();
+        //Intent monitoraScreen = getIntent();
 
         //Recuperei a string da outra activity
-        token = monitoraScreen.getStringExtra("token");
+        //token = monitoraScreen.getStringExtra("token");
     }
 
     public void setaValores(){
-        TextView consumoGas = (TextView) findViewById(R.id.textViewvalorGas);
-        consumoGas.setText(resposta.getValor());
+        TextView consumoGas = (TextView) findViewById(R.id.textViewValor__t);
+        consumoGas.setText(resposta.getValue());
 
-        TextView idBotijao = (TextView) findViewById(R.id.textViewidBotijao);
-        idBotijao.setText(resposta.getIdBotijao());
-
-        TextView data = (TextView) findViewById(R.id.textViewDataMonitoramento);
-        data.setText(resposta.getData());
-
+        TextView data_t = (TextView) findViewById(R.id.textViewData__t);
+        data_t.setText(resposta.getDate());
     }
 
-    public void retrofitConsultar(int idUsuario) throws JSONException {
+    public void retrofitConsultar(String usuario, String senha) throws JSONException {
 
-        RetrofitService service = ServiceGenerator.createService(RetrofitService.class,token);
-
-        final String json  =  "{\"idUsuario\": \"1\"}";
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json);
+        RetrofitService service = ServiceGenerator.createService(RetrofitService.class,usuario,senha);
 
         //Call<User> userCall = apiInterface.getUser(paramObject.toString());
 
-        Call<RespostaServidor> call = service.consultarConsumo(body);
+        Call<RespostaServidor> call = service.consultarConsumo();
 
         call.enqueue(new Callback<RespostaServidor>() {
             @Override
@@ -113,12 +116,11 @@ public class monitoraScreen extends AppCompatActivity {
 
                     //verifica aqui se o corpo da resposta não é nulo
                     if (respostaServidor != null) {
-                        resposta.setData(respostaServidor.getData());
-                        resposta.setIdBotijao(respostaServidor.getIdBotijao());
-                        resposta.setIdMonitoramento(respostaServidor.getIdMonitoramento());
+                        resposta.setDate(respostaServidor.getDate());
+                        resposta.setValue(respostaServidor.getValue());
+                        resposta.setIdCylinder(respostaServidor.getIdCylinder());
                         resposta.setIdSensor(respostaServidor.getIdSensor());
-                        resposta.setIdUsuario(respostaServidor.getIdUsuario());
-                        resposta.setValor(respostaServidor.getValor());
+                        resposta.setIdMonitoramento(respostaServidor.getIdMonitoramento());
 
                         setaValores();
                         //progress.dismiss();

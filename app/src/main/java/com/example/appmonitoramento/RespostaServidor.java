@@ -2,62 +2,51 @@ package com.example.appmonitoramento;
 
 public class RespostaServidor {
 
-    private int idUsuario;
-
-    private String data;
-    private String idBotijao;
-    private int idMonitoramento;
-    private int idSensor;
-    private String valor;
-
+    private String value;
+    private String date;
+    private String idCylinder;
+    private String idMonitoramento;
+    private String idSensor;
 
     public RespostaServidor(){}
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public String getValue() {
+        return value;
     }
 
-    public String getData() {
-        return data;
+    public String getDate() {
+        return date;
     }
 
-    public String getIdBotijao() {
-        return idBotijao;
+    public String getIdCylinder() {
+        return idCylinder;
     }
 
-    public int getIdMonitoramento() {
-        return idMonitoramento;
-    }
-
-    public int getIdSensor() {
-        return idSensor;
-    }
-
-    public String getValor() {
-        return valor;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public void setIdBotijao(String idBotijão) {
-        this.idBotijao = idBotijão;
-    }
-
-    public void setIdMonitoramento(int idMonitoramento) {
+    public void setIdMonitoramento(String idMonitoramento) {
         this.idMonitoramento = idMonitoramento;
     }
 
-    public void setIdSensor(int idSensor) {
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setIdCylinder(String idCylinder) {
+        this.idCylinder = idCylinder;
+    }
+
+    public void setIdSensor(String idSensor) {
         this.idSensor = idSensor;
     }
 
-    public void setValor(String valor) {
-        this.valor = valor;
+    public String getIdMonitoramento() {
+        return idMonitoramento;
+    }
+
+    public String getIdSensor() {
+        return idSensor;
     }
 }

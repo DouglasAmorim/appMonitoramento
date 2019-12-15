@@ -13,11 +13,8 @@ import retrofit2.http.Query;
 
 public interface RetrofitService {
 
-    //@Headers("X-Mashape-Key: AuuyclCPjcmshv2iOPq190OpzLrMp1FJWwejsnJrdfwOUr4h44")
-    @Headers("Content-Type: application/json")
-    //@FormUrlEncoded
-    @POST("consultar")
-    Call<RespostaServidor> consultarConsumo(@Body RequestBody idUsuario);
+    @GET("/resource/monitoring")
+    Call<RespostaServidor> consultarConsumo();
 
     //@Headers("X-Mashape-Key: AuuyclCPjcmshv2iOPq190OpzLrMp1FJWwejsnJrdfwOUr4h44")
     @Headers("Content-Type: application/json")
