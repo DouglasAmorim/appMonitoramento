@@ -8,7 +8,10 @@
     <string name="valor_gas">valor_gas</string>
     <string name="dataMonitoramento">dataMonitoramento</string>
     <string name="channel_name">myChannel</string>
+    <string name="Lugar">Lugar</string>
     <string name="tag">tag</string>
     <string name="peso">peso</string>
+    <string name="Tara">tara</string>
+    <string name="Enviar">Enviar</string>
     <string name="channel_description">MyDescription</string>
 </resources>

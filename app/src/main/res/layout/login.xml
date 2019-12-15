@@ -25,8 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Digite seu username"
         android:inputType="textPersonName"
-        android:text="Digite seu username"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <TextView
@@ -40,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Digite sua senha"
         android:inputType="textPassword" />
 
     <Button

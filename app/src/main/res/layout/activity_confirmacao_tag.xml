@@ -6,38 +6,64 @@
     android:layout_height="match_parent"
     tools:context=".confirmacaoTAG">
 
-    <EditText
-        android:id="@+id/editPeso"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/peso"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="36dp" />
-
-    <EditText
-        android:id="@+id/editTag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/tag"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editPeso" />
-
     <TextView
         android:id="@+id/textViewPeso"
         android:layout_width="72dp"
-        android:layout_height="31dp"
-        app:layout_constraintStart_toEndOf="@+id/editPeso"
-        tools:layout_editor_absoluteY="36dp" />
+        android:layout_height="33dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewTag"
-        android:layout_width="69dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toEndOf="@+id/editTag"
+        android:id="@+id/textViewPesoRecebido"
+        android:layout_width="73dp"
+        android:layout_height="33dp"
+        app:layout_constraintStart_toEndOf="@+id/textViewPeso"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tara"
+        android:layout_width="72dp"
+        android:layout_height="34dp"
+        android:text="@string/Tara"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewPeso" />
+
+    <EditText
+        android:id="@+id/editTextTara"
+        android:layout_width="73dp"
+        android:layout_height="34dp"
+        android:ems="10"
+        android:hint="@string/Tara"
+        android:inputType="textPersonName"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/tara"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPesoRecebido" />
+
+    <Button
+        android:id="@+id/buttonTara"
+        android:layout_width="73dp"
+        android:layout_height="39dp"
+        android:text="@string/Enviar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewLugar" />
+
+    <TextView
+        android:id="@+id/textViewLugar"
+        android:layout_width="72dp"
+        android:layout_height="31dp"
+        android:text="@string/Lugar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tara" />
+
+    <EditText
+        android:id="@+id/editTextLugar"
+        android:layout_width="75dp"
+        android:layout_height="31dp"
+        android:ems="10"
+        android:hint="@string/Lugar"
+        android:inputType="textPersonName"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/textViewLugar"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTara" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

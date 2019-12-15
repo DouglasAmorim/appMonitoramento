@@ -38,7 +38,8 @@ public class MyFirebaseInstanceService extends FirebaseMessagingService {
         String body = data.get("body");
 
         String peso = data.get("weight");
-        String tag = data.get("data");
+        String tag = data.get("tag");
+
         System.out.println(peso);
         System.out.println(tag);
         // TELA PARA QUAL A NOTIFICAÇÃO IRÁ REDIRECIONAR
@@ -66,9 +67,9 @@ public class MyFirebaseInstanceService extends FirebaseMessagingService {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(tag)
+                .setContentTitle(title)
                 .setContentIntent(pendingIntent)
-                .setContentText(peso)
+                .setContentText(body)
                 .setAutoCancel(true)
                 .setContentInfo("info");
         notificationManager.notify(new Random().nextInt(),notificationBuilder.build());

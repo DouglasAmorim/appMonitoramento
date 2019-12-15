@@ -8,9 +8,11 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -45,38 +47,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Ver no banco se o usuario já não está salvo
-        /*final dbGaspy mDbHelper = new dbGaspy(MainActivity.this);
+        final SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        String user_salvo = myPreferences.getString("USUARIO", "unknown");
+        String senha_salvo = myPreferences.getString("SENHA", "unknown");
+        String token = myPreferences.getString("TOKEN", "unknown");
 
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-
-        String[] projection = {
-                PostContract.PostEntry._ID,
-                PostContract.PostEntry.COLUMN_NAME_USUARIO,
-                PostContract.PostEntry.COLUMN_NAME_TOKEN
+        try {
+            retrofitFazerLogin(user_salvo,senha_salvo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(respostaLogin.getToken()!= null){
+            alert("Login Realizado com Sucesso");
+            try {
+                retrofitEnviarToken(tokenApp, user_salvo, senha_salvo);
+                alert("TOKEN" + tokenApp);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //alert(respostaLogin.getToken());
+            SharedPreferences.Editor myEditor = myPreferences.edit();
+            myEditor.putString("USUARIO", user_salvo);
+            myEditor.putString("SENHA", senha_salvo);
+            myEditor.putString("TOKEN", respostaLogin.getToken());
+            Intent monitoraScreen = new Intent(MainActivity.this, monitoraScreen.class);
+            monitoraScreen.putExtra("token",respostaLogin.getToken());
+            startActivity(monitoraScreen);
+        }else {
+            alert("LOGIN OU SENHA INCORRETOS");
         };
 
-        String selection = PostContract.PostEntry.COLUMN_NAME_USUARIO + " = ?";
-        String[] selectionArgs = { "usuario" };
-
-        String sortOrder =
-                PostContract.PostEntry.COLUMN_NAME_USUARIO+ " DESC";
-
-        Cursor c = db.query(
-                PostContract.PostEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder);
-        System.out.println("dbGaspy");
-        c.moveToFirst();
-        try {
-            long itemId = c.getLong(c.getColumnIndexOrThrow(PostContract.PostEntry._ID));
-        }catch (Exception e){
-            System.out.println("ERRO NO BANCO= " + e);
-        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
@@ -137,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
                     long newRowId = db.insert(PostContract.PostEntry.TABLE_NAME, null, values);*/
 
                     //alert(respostaLogin.getToken());
+                    SharedPreferences.Editor myEditor = myPreferences.edit();
+                    myEditor.putString("USUARIO", login);
+                    myEditor.putString("SENHA", senha);
+                    myEditor.putString("TOKEN", respostaLogin.getToken());
+                    myEditor.commit();
+
                     Intent monitoraScreen = new Intent(MainActivity.this, monitoraScreen.class);
                     monitoraScreen.putExtra("token",respostaLogin.getToken());
                     startActivity(monitoraScreen);
