@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,10 +42,41 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Ver no banco se o usuario já não está salvo
+        final dbGaspy mDbHelper = new dbGaspy(MainActivity.this);
+
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+
+        String[] projection = {
+                PostContract.PostEntry._ID,
+                PostContract.PostEntry.COLUMN_NAME_USUARIO,
+                PostContract.PostEntry.COLUMN_NAME_TOKEN
+        };
+
+        String selection = PostContract.PostEntry.COLUMN_NAME_USUARIO + " = ?";
+        String[] selectionArgs = { "usuario" };
+
+        String sortOrder =
+                PostContract.PostEntry.COLUMN_NAME_USUARIO+ " DESC";
+
+        Cursor c = db.query(
+                PostContract.PostEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+        System.out.println("dbGaspy");
+        c.moveToFirst();
+        try {
+            long itemId = c.getLong(c.getColumnIndexOrThrow(PostContract.PostEntry._ID));
+        }catch (Exception e){
+            System.out.println("ERRO NO BANCO= " + e);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-
-
 
         if(verificarPlayServices()) {
             Intent intent = new Intent(this, MyFirebaseInstanceService.class);
@@ -68,27 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                     }
                 });
-/*
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (mUser == null) {
-            System.out.println("User is not authorized");
-        } else {
-            mUser.getIdToken(true)
-                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                            System.out.println("here");
-                            if (task.isSuccessful()) {
-                                String idToken = task.getResult().getToken();
-                                System.out.println("meu token é" + idToken);
-                            } else {
-                                System.out.println("SOMETHING IS WRONG");
-                                // Handle error -> task.getException();
-                            }
-                        }
-                    });
-        }
-*/
 
 
         Button btLogin = (Button) findViewById(R.id.btLogin);
@@ -108,6 +122,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(respostaLogin.getToken()!= null){
                     alert("Login Realizado com Sucesso");
+
+                    SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    values.put(PostContract.PostEntry.COLUMN_NAME_USUARIO, login);
+                    values.put(PostContract.PostEntry.COLUMN_NAME_TOKEN, respostaLogin.getToken());
+                    long newRowId = db.insert(PostContract.PostEntry.TABLE_NAME, null, values);
+
                     //alert(respostaLogin.getToken());
                     Intent monitoraScreen = new Intent(MainActivity.this, monitoraScreen.class);
                     monitoraScreen.putExtra("token",respostaLogin.getToken());
@@ -152,52 +173,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retrofitFazerLogin(String usuario, String Senha) throws JSONException {
+        if (respostaLogin.getToken() != null){
+            alert("Usuario já está logado");
+            RetrofitService service = ServiceGenerator.createService(RetrofitService.class, respostaLogin.getToken());
 
-        RetrofitService service = ServiceGenerator.createService(RetrofitService.class, usuario, Senha);
+            //final String json  =  "{\"idUsuario\": \"1\"}";
+            //RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), json);
 
-        //final String json  =  "{\"idUsuario\": \"1\"}";
+            //Call<RespostaServidor> call = service.consultarConsumo(body);
 
-        final String jsonUser  = "{\"user\": \""+usuario+"\"}";
-        final String jsonSenha  = "{\"senha\": \""+Senha+"\"}";
-        //RequestBody bodyUser = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), jsonUser);
-        //RequestBody bodySenha = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), jsonSenha);
-
-        //Call<User> userCall = apiInterface.getUser(paramObject.toString());
-
-        Call<RespostaServidorLogin> call = service.consultarLogin();
-
-        call.enqueue(new Callback<RespostaServidorLogin>() {
-            @Override
-            public void onResponse(Call<RespostaServidorLogin> call, Response<RespostaServidorLogin> response) {
-
-                if (response.isSuccessful()) {
-
-                    RespostaServidorLogin respostaServidorLogin = response.body();
-
-                    //verifica aqui se o corpo da resposta não é nulo
-                    if (respostaServidorLogin != null) {
-                        respostaLogin.setToken(respostaServidorLogin.getToken());
+        }else {
+            RetrofitService service = ServiceGenerator.createService(RetrofitService.class, usuario, Senha);
 
 
-                        //setaValores();
-                        //progress.dismiss();
+            Call<RespostaServidorLogin> call = service.consultarLogin();
+
+            call.enqueue(new Callback<RespostaServidorLogin>() {
+                @Override
+                public void onResponse(Call<RespostaServidorLogin> call, Response<RespostaServidorLogin> response) {
+
+                    if (response.isSuccessful()) {
+
+                        RespostaServidorLogin respostaServidorLogin = response.body();
+
+                        //verifica aqui se o corpo da resposta não é nulo
+                        if (respostaServidorLogin != null) {
+                            respostaLogin.setToken(respostaServidorLogin.getToken());
+
+
+                            //setaValores();
+                            //progress.dismiss();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Resposta nula do servidor", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(getApplicationContext(),"Resposta nula do servidor", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Resposta não foi sucesso", Toast.LENGTH_SHORT).show();
+                        // segura os erros de requisição
+                        ResponseBody errorBody = response.errorBody();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(),"Resposta não foi sucesso", Toast.LENGTH_SHORT).show();
-                    // segura os erros de requisição
-                    ResponseBody errorBody = response.errorBody();
+                    //progress.dismiss();
                 }
-                //progress.dismiss();
-            }
 
 
-            @Override
-            public void onFailure(Call<RespostaServidorLogin> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),"Erro na chamada ao servidor", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                @Override
+                public void onFailure(Call<RespostaServidorLogin> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Erro na chamada ao servidor", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }
