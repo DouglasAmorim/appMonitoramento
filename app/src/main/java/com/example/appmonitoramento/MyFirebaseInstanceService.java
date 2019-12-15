@@ -80,7 +80,7 @@ public class MyFirebaseInstanceService extends FirebaseMessagingService {
         String NOTIFICATION_CHANNEL_ID = "pji3";
 
         // TELA PARA QUAL A NOTIFICAÇÃO IRÁ REDIRECIONAR
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, monitoraScreen.class);
         PendingIntent pendingIntent = PendingIntent .getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
