@@ -83,6 +83,23 @@ public class monitoraScreen extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 // Your code here
+                final SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(monitoraScreen.this);
+
+                String user_salvo = myPreferences.getString("USUARIO", "unknown");
+                String senha_salvo = myPreferences.getString("SENHA", "unknown");
+                String token = myPreferences.getString("TOKEN", "unknown");
+
+                try {
+                    retrofitConsultar(user_salvo,senha_salvo);
+                    //alert("TOKEN" + tokenApp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //Pega a intent de outra activity
+                //Intent monitoraScreen = getIntent();
+
+                //Recuperei a string da outra activity
+                //token = monitoraScreen.getStringExtra("token");
                 Toast.makeText(getApplicationContext(), "Works!", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
@@ -124,10 +141,13 @@ public class monitoraScreen extends AppCompatActivity {
 
     public void setaValores(){
         TextView consumoGas = (TextView) findViewById(R.id.textViewValor__t);
-        consumoGas.setText(resposta.getValue());
+        consumoGas.setText(resposta.getWeight());
 
         TextView data_t = (TextView) findViewById(R.id.textViewData__t);
         data_t.setText(resposta.getDate());
+
+        TextView score_t = (TextView) findViewById(R.id.textViewPorcentagem__t);
+        score_t.setText(resposta.getScore());
     }
 
     public void retrofitConsultar(String usuario, String senha) throws JSONException {
@@ -149,10 +169,8 @@ public class monitoraScreen extends AppCompatActivity {
                     //verifica aqui se o corpo da resposta não é nulo
                     if (respostaServidor != null) {
                         resposta.setDate(respostaServidor.getDate());
-                        resposta.setValue(respostaServidor.getValue());
-                        resposta.setIdCylinder(respostaServidor.getIdCylinder());
-                        resposta.setIdSensor(respostaServidor.getIdSensor());
-                        resposta.setIdMonitoramento(respostaServidor.getIdMonitoramento());
+                        resposta.setWeight(respostaServidor.getWeight());
+                        resposta.setScore(respostaServidor.getScore());
 
                         setaValores();
                         //progress.dismiss();

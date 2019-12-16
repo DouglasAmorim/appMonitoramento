@@ -13,6 +13,7 @@
     <string name="peso">peso</string>
     <string name="Tara">tara</string>
     <string name="Enviar">Enviar</string>
+    <string name="porcentagem">porcentagem</string>
     <string name="channel_description">MyDescription</string>
     <string name="Monitoramento">Monitoramento</string>
 </resources>

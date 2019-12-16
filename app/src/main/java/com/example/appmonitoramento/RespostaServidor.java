@@ -2,51 +2,33 @@ package com.example.appmonitoramento;
 
 public class RespostaServidor {
 
-    private String value;
+    private String weight;
     private String date;
-    private String idCylinder;
-    private String idMonitoramento;
-    private String idSensor;
+    private String score;
 
     public RespostaServidor(){}
 
-    public String getValue() {
-        return value;
+    public String getWeight() {
+        return weight;
+    }
+
+    public String getScore() {
+        return score;
     }
 
     public String getDate() {
         return date;
     }
 
-    public String getIdCylinder() {
-        return idCylinder;
+    public void setWeight(String weight) {
+        this.weight = weight;
     }
 
-    public void setIdMonitoramento(String idMonitoramento) {
-        this.idMonitoramento = idMonitoramento;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    public void setScore(String score) {
+        this.score = score;
     }
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public void setIdCylinder(String idCylinder) {
-        this.idCylinder = idCylinder;
-    }
-
-    public void setIdSensor(String idSensor) {
-        this.idSensor = idSensor;
-    }
-
-    public String getIdMonitoramento() {
-        return idMonitoramento;
-    }
-
-    public String getIdSensor() {
-        return idSensor;
     }
 }
