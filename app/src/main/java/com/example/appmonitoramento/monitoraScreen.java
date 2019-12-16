@@ -83,6 +83,18 @@ public class monitoraScreen extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 // Your code here
+                final SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(monitoraScreen.this);
+
+                String user_salvo = myPreferences.getString("USUARIO", "unknown");
+                String senha_salvo = myPreferences.getString("SENHA", "unknown");
+                String token = myPreferences.getString("TOKEN", "unknown");
+
+                try {
+                    retrofitConsultar(user_salvo,senha_salvo);
+                    //alert("TOKEN" + tokenApp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(getApplicationContext(), "Works!", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
