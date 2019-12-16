@@ -100,6 +100,7 @@ public class monitoraScreen extends AppCompatActivity {
 
                 //Recuperei a string da outra activity
                 //token = monitoraScreen.getStringExtra("token");
+
                 Toast.makeText(getApplicationContext(), "Works!", Toast.LENGTH_LONG).show();
                 // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
